@@ -189,7 +189,7 @@ except Exception as e:
     st.warning(f"GPU not available, falling back to CPU: {str(e)}")
     embedding_model = SentenceTransformer('all-MiniLM-L6-v2', device='cpu')
 
-    
+
 # Precompute canonical embeddings
 canonical_subjects = list(set(SUBJECT_MAPPING.values()))
 canonical_embeddings = embedding_model.encode(canonical_subjects, convert_to_tensor=True)
@@ -542,6 +542,14 @@ def main():
                 st.session_state.classified_data = []
                 st.session_state.edited_data = []
                 st.session_state.formatted_subjects = ""
+                st.session_state.country = ""
+                st.session_state.university = ""
+                st.session_state.year = "Year 1"
+                st.session_state.semester = "Sem 1"
+                st.session_state.course_type = "Core"
+                st.session_state.raw_text = ""
+
+                st.rerun()
                 
             except Exception as e:
                 st.error(f"Save failed: {str(e)}")
