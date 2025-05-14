@@ -6,6 +6,7 @@ import os
 import google.generativeai as genai
 from sentence_transformers import SentenceTransformer, util
 from supabase import create_client
+import torch
 
 # Configuration and Initialization 
 def get_config():
@@ -182,7 +183,13 @@ SUBJECT_MAPPING = {
     "Business Analytics Tools and Technologies": "Business Analytics",
 }
 
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2', device='cpu')
+try:
+    embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+except Exception as e:
+    st.warning(f"GPU not available, falling back to CPU: {str(e)}")
+    embedding_model = SentenceTransformer('all-MiniLM-L6-v2', device='cpu')
+
+    
 # Precompute canonical embeddings
 canonical_subjects = list(set(SUBJECT_MAPPING.values()))
 canonical_embeddings = embedding_model.encode(canonical_subjects, convert_to_tensor=True)
