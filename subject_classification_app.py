@@ -472,7 +472,7 @@ def main():
         with col1:
             classify_btn = st.form_submit_button("🏷️Classify Subjects")
         with col2:
-            save_btn = st.form_submit_button("💾 Save to Excel")
+            save_btn = st.form_submit_button("💾 Save to Database")
 
         if classify_btn:
             if not all([st.session_state.country, st.session_state.university, subjects]):
@@ -549,8 +549,9 @@ def main():
                 st.session_state.course_type = "Core"
                 st.session_state.raw_text = ""
 
-                st.rerun()
-                
+                st.success(result)
+                st.experimental_rerun()
+
             except Exception as e:
                 st.error(f"Save failed: {str(e)}")
 
