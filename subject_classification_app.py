@@ -7,18 +7,27 @@ import google.generativeai as genai
 from sentence_transformers import SentenceTransformer, util
 from supabase import create_client
 
-# Load environment variables from .env
-load_dotenv()
+# Configuration and Initialization 
+def get_config():
+    if st.secrets:  # Production (Streamlit Community Cloud)
+        return {
+            "supabase_url": st.secrets["SUPABASE_URL"],
+            "supabase_key": st.secrets["SUPABASE_KEY"],
+            "api_key": st.secrets["API_KEY"]
+        }
+    else:  # Local development
+        from dotenv import load_dotenv
+        load_dotenv()
+        return {
+            "supabase_url": os.getenv("SUPABASE_URL"),
+            "supabase_key": os.getenv("SUPABASE_KEY"),
+            "api_key": os.getenv("API_KEY")
+        }
 
-# Configure the API key
-genai.configure(api_key=os.getenv("API_KEY"))
-
-
-# Initialize Supabase client
-def get_supabase_client():
-    url = os.getenv("SUPABASE_URL")
-    key = os.getenv("SUPABASE_KEY")
-    return create_client(url, key)
+# Initialize services
+config = get_config()
+supabase = create_client(config["supabase_url"], config["supabase_key"])
+genai.configure(api_key=config["api_key"])
 
 
 def format_text(input_text):
@@ -338,7 +347,8 @@ def check_subject_in_kiu(subject_name):
         return "No"
 
 def save_to_supabase(data):
-    supabase = get_supabase_client()
+    supabase = get_config()
+    supabase = create_client(config["supabase_url"], config["supabase_key"])
     
     try:
         # Prepare data for insertion
@@ -368,7 +378,8 @@ def save_to_supabase(data):
         raise Exception(f"Supabase save failed: {str(e)}")
 
 def display_unique_counts():
-    supabase = get_supabase_client()
+    supabase = get_config()
+    supabase = create_client(config["supabase_url"], config["supabase_key"])
     
     try:
         # Fetch unique categories
