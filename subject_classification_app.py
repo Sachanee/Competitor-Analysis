@@ -182,7 +182,7 @@ SUBJECT_MAPPING = {
     "Business Analytics Tools and Technologies": "Business Analytics",
 }
 
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2', device='cpu')
 # Precompute canonical embeddings
 canonical_subjects = list(set(SUBJECT_MAPPING.values()))
 canonical_embeddings = embedding_model.encode(canonical_subjects, convert_to_tensor=True)
