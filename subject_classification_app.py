@@ -440,7 +440,8 @@ def main():
 
     # UI Setup
     st.markdown("<div style='text-align: center;'><h2>Business Analytics Subject Classification App</h1></div>", unsafe_allow_html=True)
-    
+    st.image("images/background.png")
+
     if st.button("🔄 Refresh App"):
         st.session_state["trigger_refresh"] = True
         st.rerun()
