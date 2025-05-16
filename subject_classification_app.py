@@ -387,13 +387,13 @@ def display_unique_counts():
     supabase = create_client(config["supabase_url"], config["supabase_key"])
     
     try:
-        # Fetch unique categories with counts
-        categories_res = supabase.rpc('get_unique_categories_with_counts').execute()
-        unique_categories = [(item['category_name'], item['subject_count']) for item in categories_res.data] if categories_res.data else []
+        # Fetch unique categories
+        categories_res = supabase.rpc('get_unique_categories').execute()
+        unique_categories = [item['category_name'] for item in categories_res.data] if categories_res.data else []
         
-        # Fetch unique subjects with counts
-        subjects_res = supabase.rpc('get_unique_subjects_with_counts').execute()
-        unique_subjects = [(item['subject_name'], item['subject_count']) for item in subjects_res.data] if subjects_res.data else []
+        # Fetch unique subjects
+        subjects_res = supabase.rpc('get_unique_subjects').execute()
+        unique_subjects = [item['subject_name'] for item in subjects_res.data] if subjects_res.data else []
         
         # Display in two columns
         col1, col2 = st.columns(2)
@@ -401,14 +401,14 @@ def display_unique_counts():
         with col1:
             st.subheader("Categories")
             st.write(f"**Total Unique Categories:** {len(unique_categories)}")
-            st.write("**All Categories with Counts:**")
-            st.dataframe(pd.DataFrame(unique_categories, columns=["Category", "Count"]))
+            st.write("**All Categories:**")
+            st.write(pd.DataFrame(sorted(unique_categories), columns=["Category"]))
         
         with col2:
             st.subheader("Canonical Subjects")
             st.write(f"**Total Unique Subjects:** {len(unique_subjects)}")
-            st.write("**All Subjects with Counts:**")
-            st.dataframe(pd.DataFrame(unique_subjects, columns=["Subject", "Count"]))
+            st.write("**All Subjects:**")
+            st.write(pd.DataFrame(sorted(unique_subjects), columns=["Subject"]))
             
     except Exception as e:
         st.error(f"Error loading data from Supabase: {str(e)}")
