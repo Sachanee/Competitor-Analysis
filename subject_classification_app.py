@@ -1,7 +1,5 @@
-
 import streamlit as st
 import pandas as pd
-from dotenv import load_dotenv
 import os
 import google.generativeai as genai
 from sentence_transformers import SentenceTransformer, util
@@ -515,7 +513,7 @@ def main():
                 },
                 hide_index=True,
                 use_container_width=True,
-                key="category_editor"
+                key="category_editor"   
             )
             
             st.session_state.edited_data = edited_df.to_dict('records')
@@ -551,7 +549,7 @@ def main():
                 st.session_state.raw_text = ""
 
                 st.success(result)
-                st.experimental_rerun()
+                st.rerun()
 
             except Exception as e:
                 st.error(f"Save failed: {str(e)}")
