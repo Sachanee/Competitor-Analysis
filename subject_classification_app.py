@@ -370,7 +370,8 @@ def save_to_supabase(data):
                 "subject": item["Subject"],
                 "category": item["Category"],
                 "offered_at_kiu": item["Offered at KIU"],
-                "canonical_subject": item["Canonical Subject"]
+                "canonical_subject": item["Canonical Subject"],
+                "count": item.get("Count", 1) 
             })
         
         # Insert records
