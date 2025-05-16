@@ -551,7 +551,7 @@ def main():
                 st.session_state.raw_text = ""
 
                 st.success(result)
-                st.experimental_rerun()
+                st.rerun()
 
             except Exception as e:
                 st.error(f"Save failed: {str(e)}")
