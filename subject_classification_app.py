@@ -1,5 +1,7 @@
+
 import streamlit as st
 import pandas as pd
+from dotenv import load_dotenv
 import os
 import google.generativeai as genai
 from sentence_transformers import SentenceTransformer, util
@@ -549,7 +551,7 @@ def main():
                 st.session_state.raw_text = ""
 
                 st.success(result)
-                st.rerun()
+                st.experimental_rerun()
 
             except Exception as e:
                 st.error(f"Save failed: {str(e)}")
