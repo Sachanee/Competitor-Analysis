@@ -354,13 +354,13 @@ def check_subject_in_kiu(subject_name):
         return "No"
 
 def save_to_supabase(data):
-    supabase = get_config()
-    supabase = create_client(config["supabase_url"], config["supabase_key"])
-    
     try:
-        # Prepare data for insertion
         records = []
         for item in data:
+            # Skip KIU records
+            if "kiu" in item["University"].lower():
+                continue
+                
             records.append({
                 "country": item["Country"],
                 "university": item["University"],
@@ -368,22 +368,32 @@ def save_to_supabase(data):
                 "semester": item["Semester"],
                 "course_type": item["Core or Elective"],
                 "subject": item["Subject"],
-                "category": item["Category"],
+                "category": item["Final Category"],
                 "offered_at_kiu": item["Offered at KIU"],
-                "canonical_subject": item["Canonical Subject"],
-                "count": item.get("Count", 1) 
+                "canonical_subject": item["Canonical Subject"]
             })
         
-        # Insert records
-        response = supabase.table("subjects").insert(records).execute()
-        
-        if hasattr(response, 'error') and response.error:
-            raise Exception(response.error)
+        if records:
+            # Insert new records
+            supabase.table("subjects").insert(records).execute()
             
-        return f"Successfully saved {len(records)} records to Supabase"
+            # Get updated counts
+            counts = get_university_counts()
+            
+            # Update counts in database
+            for subject, count in counts.items():
+                supabase.table("subjects")\
+                    .update({"university_count": count})\
+                    .eq("canonical_subject", subject)\
+                    .execute()
+                    
+            return f"Saved {len(records)} records"
+        return "Nothing to save"
     
     except Exception as e:
-        raise Exception(f"Supabase save failed: {str(e)}")
+        st.error(f"Save failed: {str(e)}")
+        return "Error saving data"
+
 
 def display_unique_counts():
     supabase = get_config()
